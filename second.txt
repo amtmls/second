@@ -1,0 +1,14 @@
+case class data(year:String, sup_value:Float)
+val usRDD = sc.textFile("/user/SparkExample/us_barley.csv")
+val worldRDD = sc.textFile("/user/SparkExample/world_barley.csv")
+val us_data_split = usRDD.map(line => line.split(","))
+val world_data_split = worldRDD.map(line => line.split(","))
+val rdd_us = us_data_split.map(d => data(d(0), d(1).toFloat))
+val rdd_world = world_data_split.map(d => data(d(0), d(1).toFloat))
+val us_DF = rdd_us.toDF()
+val world_DF = rdd_world.toDF()
+val combined_data = us_DF.union(world_DF)
+
+combined_data.foreach { row => 
+           row.toSeq.foreach{col => println(col) }
+    }
